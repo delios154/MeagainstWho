@@ -14,7 +14,7 @@ class PopBalloonsGame: Microgame {
     private func createBalloons() {
         guard let scene = scene else { return }
         
-        for i in 0..<targetCount {
+        for _ in 0..<targetCount {
             let balloon = createBalloon()
             balloon.position = CGPoint(
                 x: CGFloat.random(in: 50...scene.frame.width - 50),
@@ -144,7 +144,7 @@ class PopBalloonsGame: Microgame {
 
 extension SKColor {
     static func random() -> SKColor {
-        let colors: [SKColor] = [.red, .blue, .green, .yellow, .purple, .orange, .pink, .cyan]
+        let colors: [SKColor] = [.red, .blue, .green, .yellow, .purple, .orange, .systemPink, .cyan]
         return colors.randomElement() ?? .white
     }
 }

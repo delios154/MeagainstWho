@@ -58,7 +58,7 @@ class BalanceStackGame: Microgame {
     }
     
     func handleTouch(_ location: CGPoint) {
-        guard let currentBlock = currentBlock, !isDropping else { return }
+        guard currentBlock != nil, !isDropping else { return }
         
         dropBlock()
     }

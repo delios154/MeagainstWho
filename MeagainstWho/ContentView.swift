@@ -1,61 +1,47 @@
-//
-//  ContentView.swift
-//  MeagainstWho
-//
-//  Created by Mohammed Almansoori on 27/09/2025.
-//
-
 import SwiftUI
-import SwiftData
+import SpriteKit
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @StateObject private var gameCoordinator = GameCoordinator()
+    @State private var showingSettings = false
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        ZStack {
+            // SpriteKit Game View
+            SpriteView(scene: gameCoordinator.currentScene)
+                .ignoresSafeArea()
+                .overlay(alignment: .topLeading) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                        Text("\(gameCoordinator.totalStars)")
+                            .font(.headline)
+                            .foregroundColor(.white)
                     }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.black.opacity(0.6))
+                    .cornerRadius(20)
+                    .padding()
+                    .allowsHitTesting(false)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                .overlay(alignment: .topTrailing) {
+                    Button(action: { showingSettings = true }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(8)
+                            .background(Color.black.opacity(0.6))
+                            .cornerRadius(20)
                     }
+                    .padding()
                 }
-            }
-        } detail: {
-            Text("Select an item")
+        }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
+        }
+        .onAppear {
+            gameCoordinator.start()
         }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
-}
-
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }

@@ -3,8 +3,8 @@ import CoreMotion
 
 class TiltBalanceGame: Microgame {
     private weak var scene: SKScene?
-    private var ball: SKNode?
-    private var circle: SKNode?
+    private var ball: SKShapeNode?
+    private var circle: SKShapeNode?
     private var motionManager: CMMotionManager?
     private var isBalanced = false
     private var balanceTime: TimeInterval = 0

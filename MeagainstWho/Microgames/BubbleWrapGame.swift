@@ -14,7 +14,6 @@ class BubbleWrapGame: Microgame {
     private func createBubbles() {
         guard let scene = scene else { return }
         
-        let bubbleSize: CGFloat = 40
         let spacing: CGFloat = 50
         let startX: CGFloat = 50
         let startY: CGFloat = 200

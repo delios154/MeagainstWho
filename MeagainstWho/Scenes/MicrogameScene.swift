@@ -6,14 +6,14 @@ protocol MicrogameSceneDelegate: AnyObject {
 }
 
 class MicrogameScene: SKScene {
-    weak var delegate: MicrogameSceneDelegate?
+    weak var microgameDelegate: MicrogameSceneDelegate?
     
     private let microgame: Microgame
     private let duration: TimeInterval
     private var timeRemaining: TimeInterval
     private var timer: Timer?
     
-    private var progressBar: SKNode?
+    private var progressBar: SKShapeNode?
     private var timeLabel: SKLabelNode?
     private var clueBanner: SKNode?
     
@@ -29,6 +29,9 @@ class MicrogameScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
+        // Ensure the scene fills the available view
+        self.scaleMode = .resizeFill
+        self.size = view.bounds.size
         setupBackground()
         setupTimer()
         setupProgressBar()
@@ -52,7 +55,7 @@ class MicrogameScene: SKScene {
             timer?.invalidate()
             timer = nil
             microgame.teardown()
-            delegate?.microgameCompleted(success: false)
+            microgameDelegate?.microgameCompleted(success: false)
         } else {
             updateProgressBar()
         }
@@ -84,7 +87,11 @@ class MicrogameScene: SKScene {
         let progress = timeRemaining / duration
         let width = 300 * progress
         
-        progressBar?.run(SKAction.resize(toWidth: width, duration: 0.1))
+        if let bar = progressBar {
+            let rect = CGRect(x: -(width / 2.0), y: -10.0, width: width, height: 20.0)
+            let path = CGPath(roundedRect: rect, cornerWidth: 10.0, cornerHeight: 10.0, transform: nil)
+            bar.path = path
+        }
         timeLabel?.text = "\(Int(timeRemaining))"
     }
     

@@ -3,7 +3,7 @@ import SpriteKit
 class SliderStopGame: Microgame {
     private weak var scene: SKScene?
     private var slider: SKNode?
-    private var targetZone: SKNode?
+    private var targetZone: SKShapeNode?
     private var isMoving = true
     private var direction: CGFloat = 1
     private var speed: CGFloat = 3
@@ -41,12 +41,13 @@ class SliderStopGame: Microgame {
     private func setupTargetZone() {
         guard let scene = scene else { return }
         
-        targetZone = SKShapeNode(rectOf: CGSize(width: 60, height: 20), cornerRadius: 10)
-        targetZone?.fillColor = SKColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 0.5)
-        targetZone?.strokeColor = SKColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 1.0)
-        targetZone?.lineWidth = 3
-        targetZone?.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
-        scene.addChild(targetZone!)
+        let zone = SKShapeNode(rectOf: CGSize(width: 60, height: 20), cornerRadius: 10)
+        zone.fillColor = SKColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 0.5)
+        zone.strokeColor = SKColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 1.0)
+        zone.lineWidth = 3
+        zone.position = CGPoint(x: scene.frame.midX, y: scene.frame.midY)
+        scene.addChild(zone)
+        targetZone = zone
         
         // Add pulsing animation
         let pulse = SKAction.sequence([

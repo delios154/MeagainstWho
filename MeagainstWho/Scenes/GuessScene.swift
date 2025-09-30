@@ -6,7 +6,7 @@ protocol GuessSceneDelegate: AnyObject {
 }
 
 class GuessScene: SKScene {
-    weak var delegate: GuessSceneDelegate?
+    weak var guessDelegate: GuessSceneDelegate?
     
     private var opponentNodes: [SKNode] = []
     private var selectedOpponent: Opponent?
@@ -155,7 +155,7 @@ class GuessScene: SKScene {
                     
                     // Delay to show effect, then notify
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        self.delegate?.opponentSelected(opponent)
+                        self.guessDelegate?.opponentSelected(opponent)
                     }
                 }
                 break

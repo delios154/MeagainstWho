@@ -5,7 +5,7 @@ protocol ResultSceneDelegate: AnyObject {
 }
 
 class ResultScene: SKScene {
-    weak var delegate: ResultSceneDelegate?
+    weak var resultDelegate: ResultSceneDelegate?
     
     private let isCorrect: Bool
     private let correctOpponent: Opponent
@@ -205,7 +205,7 @@ class ResultScene: SKScene {
             
             // Notify delegate
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.delegate?.resultSceneFinished()
+                self.resultDelegate?.resultSceneFinished()
             }
         }
     }

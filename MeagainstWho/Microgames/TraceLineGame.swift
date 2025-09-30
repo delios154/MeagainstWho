@@ -1,4 +1,5 @@
 import SpriteKit
+import Combine
 
 class TraceLineGame: Microgame {
     private weak var scene: SKScene?
@@ -94,7 +95,7 @@ class TraceLineGame: Microgame {
     }
     
     private func checkPathAccuracy() {
-        guard let scene = scene else { return }
+        guard scene != nil else { return }
         
         // Check if current trace point is close to path
         let currentPathPoint = pathPoints[currentPathIndex]

@@ -1,14 +1,17 @@
 import GameKit
 import Foundation
+import Combine
+import UIKit
 
-class GameCenterManager: ObservableObject {
+class GameCenterManager: NSObject, ObservableObject {
     static let shared = GameCenterManager()
     
     @Published var isAuthenticated = false
     @Published var localPlayer: GKLocalPlayer?
     
-    private init() {
+    private override init() {
         localPlayer = GKLocalPlayer.local
+        super.init()
         authenticatePlayer()
     }
     
@@ -61,7 +64,12 @@ class GameCenterManager: ObservableObject {
     func reportScore(_ score: Int, leaderboardID: String) {
         guard isAuthenticated else { return }
         
-        GKLeaderboard.submitScore(score, category: leaderboardID) { error in
+        GKLeaderboard.submitScore(
+            score,
+            context: 0,
+            player: GKLocalPlayer.local,
+            leaderboardIDs: [leaderboardID]
+        ) { error in
             if let error = error {
                 print("Failed to report score: \(error)")
             }
@@ -70,25 +78,19 @@ class GameCenterManager: ObservableObject {
     
     func showLeaderboard() {
         guard isAuthenticated else { return }
-        
-        let viewController = GKGameCenterViewController(leaderboardID: "daily_streak", playerScope: .global, timeScope: .allTime)
-        viewController.gameCenterDelegate = self
-        
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-            window.rootViewController?.present(viewController, animated: true)
+
+        if #available(iOS 14.0, *) {
+            GKAccessPoint.shared.trigger(state: .leaderboards) { }
+            return
         }
     }
     
     func showAchievements() {
         guard isAuthenticated else { return }
-        
-        let viewController = GKGameCenterViewController(state: .achievements)
-        viewController.gameCenterDelegate = self
-        
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-            window.rootViewController?.present(viewController, animated: true)
+
+        if #available(iOS 14.0, *) {
+            GKAccessPoint.shared.trigger(state: .achievements) { }
+            return
         }
     }
     
@@ -112,8 +114,3 @@ class GameCenterManager: ObservableObject {
     }
 }
 
-extension GameCenterManager: GKGameCenterControllerDelegate {
-    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-        gameCenterViewController.dismiss(animated: true)
-    }
-}

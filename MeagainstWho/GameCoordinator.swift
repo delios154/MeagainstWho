@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import SpriteKit
 import Foundation
 
@@ -27,12 +28,16 @@ class GameCoordinator: ObservableObject {
     private let gameCenter = GameCenterManager.shared
     
     init() {
-        self.currentScene = MenuScene()
+        let menu = MenuScene()
+        self.currentScene = menu
         self.totalStars = persistence.totalStars
+        menu.menuDelegate = self
     }
     
     func start() {
-        currentScene = MenuScene()
+        let menu = MenuScene()
+        menu.menuDelegate = self
+        currentScene = menu
         gameState = .menu
     }
     
@@ -40,28 +45,29 @@ class GameCoordinator: ObservableObject {
         // Select hidden opponent
         hiddenOpponent = Opponent.allOpponents.randomElement()
         guard let opponent = hiddenOpponent else { return }
-        
+
         // Generate clues for this opponent
         clues = clueService.generateClues(for: opponent)
         currentClueIndex = 0
-        
+        currentMicrogameIndex = 0
+
         // Create new run
         currentRun = GameRun(opponent: opponent, clues: clues)
-        
+
         // Start first microgame
         startNextMicrogame()
     }
     
     private func startNextMicrogame() {
-        guard let run = currentRun else { return }
-        
+        guard currentRun != nil else { return }
+
         gameState = .playing
         currentMicrogameIndex += 1
-        
+
         if currentMicrogameIndex <= 3 {
             let microgame = MicrogameFactory.createRandomMicrogame()
             let scene = MicrogameScene(microgame: microgame, duration: 5.0)
-            scene.delegate = self
+            scene.microgameDelegate = self
             currentScene = scene
         } else {
             // All microgames complete, show guess screen
@@ -72,7 +78,7 @@ class GameCoordinator: ObservableObject {
     private func showGuessScreen() {
         gameState = .guessing
         let scene = GuessScene()
-        scene.delegate = self
+        scene.guessDelegate = self
         currentScene = scene
     }
     
@@ -95,7 +101,7 @@ class GameCoordinator: ObservableObject {
         
         // Show result
         let resultScene = ResultScene(isCorrect: isCorrect, correctOpponent: hiddenOpponent)
-        resultScene.delegate = self
+        resultScene.resultDelegate = self
         currentScene = resultScene
         
         if isCorrect {
@@ -121,12 +127,19 @@ class GameCoordinator: ObservableObject {
     func startBonusRound() {
         gameState = .bonus
         let bonusScene = BonusScene()
-        bonusScene.delegate = self
+        bonusScene.bonusDelegate = self
         currentScene = bonusScene
     }
     
     func returnToMenu() {
         start()
+    }
+}
+
+// MARK: - MenuSceneDelegate
+extension GameCoordinator: MenuSceneDelegate {
+    func startGameRequested() {
+        startNewRun()
     }
 }
 

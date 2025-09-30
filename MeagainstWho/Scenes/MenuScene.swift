@@ -1,12 +1,20 @@
 import SpriteKit
 import SwiftUI
 
+protocol MenuSceneDelegate: AnyObject {
+    func startGameRequested()
+}
+
 class MenuScene: SKScene {
+    weak var menuDelegate: MenuSceneDelegate?
     private var playButton: SKNode?
     private var titleLabel: SKLabelNode?
     private var starsLabel: SKLabelNode?
     
     override func didMove(to view: SKView) {
+        // Ensure the scene fills the available view
+        self.scaleMode = .resizeFill
+        self.size = view.bounds.size
         setupBackground()
         setupTitle()
         setupPlayButton()
@@ -130,19 +138,14 @@ class MenuScene: SKScene {
             let scaleUp = SKAction.scale(to: 1.0, duration: 0.1)
             let sequence = SKAction.sequence([scaleDown, scaleUp])
             playButton.run(sequence)
-            
+
             // Trigger haptic feedback
             HapticsService.shared.medium()
-            
+
             // Start game after animation
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                // This will be handled by the coordinator
-                NotificationCenter.default.post(name: .startGame, object: nil)
+                self.menuDelegate?.startGameRequested()
             }
         }
     }
-}
-
-extension Notification.Name {
-    static let startGame = Notification.Name("startGame")
 }

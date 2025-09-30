@@ -2,8 +2,8 @@ import SpriteKit
 
 class TapOnBeatGame: Microgame {
     private weak var scene: SKScene?
-    private var target: SKNode?
-    private var ring: SKNode?
+    private var target: SKShapeNode?
+    private var ring: SKShapeNode?
     private var isTargetActive = false
     private var tapCount = 0
     private var targetCount = 5

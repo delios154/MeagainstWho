@@ -2,7 +2,7 @@ import SpriteKit
 
 class AvoidWallsGame: Microgame {
     private weak var scene: SKScene?
-    private var player: SKNode?
+    private var player: SKShapeNode?
     private var walls: [SKNode] = []
     private var isRising = false
     private var wallTimer: Timer?

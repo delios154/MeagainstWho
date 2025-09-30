@@ -5,14 +5,14 @@ protocol BonusSceneDelegate: AnyObject {
 }
 
 class BonusScene: SKScene {
-    weak var delegate: BonusSceneDelegate?
+    weak var bonusDelegate: BonusSceneDelegate?
     
     private var timeRemaining: TimeInterval = 5.0
     private var timer: Timer?
     private var score = 0
     private var targetScore = 10
     
-    private var progressBar: SKNode?
+    private var progressBar: SKShapeNode?
     private var timeLabel: SKLabelNode?
     private var scoreLabel: SKLabelNode?
     private var targetNode: SKNode?
@@ -329,7 +329,7 @@ class BonusScene: SKScene {
         
         // Auto-continue after 3 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.delegate?.bonusCompleted(starsEarned: starsEarned)
+            self.bonusDelegate?.bonusCompleted(starsEarned: starsEarned)
         }
     }
     

@@ -1,4 +1,5 @@
 import SpriteKit
+import Combine
 
 class WhackMoleGame: Microgame {
     private weak var scene: SKScene?

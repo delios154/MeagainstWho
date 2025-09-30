@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 class GameSettings: ObservableObject {
     @Published var soundOn: Bool {
