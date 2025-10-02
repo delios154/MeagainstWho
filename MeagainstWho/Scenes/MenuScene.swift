@@ -10,11 +10,13 @@ class MenuScene: SKScene {
     private var playButton: SKNode?
     private var titleLabel: SKLabelNode?
     private var starsLabel: SKLabelNode?
-    
+
     override func didMove(to view: SKView) {
         // Ensure the scene fills the available view
         self.scaleMode = .resizeFill
         self.size = view.bounds.size
+        self.isUserInteractionEnabled = true
+        view.isUserInteractionEnabled = true
         setupBackground()
         setupTitle()
         setupPlayButton()
@@ -53,10 +55,12 @@ class MenuScene: SKScene {
     private func setupPlayButton() {
         let buttonSize = CGSize(width: 200, height: 60)
         let button = SKShapeNode(rectOf: buttonSize, cornerRadius: 30)
+        button.name = "playButton"
         button.fillColor = SKColor(red: 0.2, green: 0.8, blue: 0.2, alpha: 1.0)
         button.strokeColor = .white
         button.lineWidth = 3
         button.position = CGPoint(x: frame.midX, y: frame.midY - 20)
+        button.isUserInteractionEnabled = false
         addChild(button)
         
         let playLabel = SKLabelNode(fontNamed: "Arial-Bold")

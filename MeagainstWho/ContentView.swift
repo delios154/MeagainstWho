@@ -4,12 +4,13 @@ import SpriteKit
 struct ContentView: View {
     @StateObject private var gameCoordinator = GameCoordinator()
     @State private var showingSettings = false
-    
+
     var body: some View {
         ZStack {
             // SpriteKit Game View
             SpriteView(scene: gameCoordinator.currentScene)
                 .ignoresSafeArea()
+                .id(ObjectIdentifier(gameCoordinator.currentScene))
                 .overlay(alignment: .topLeading) {
                     HStack(spacing: 4) {
                         Image(systemName: "star.fill")
